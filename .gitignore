@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+backend/node_modules/
+package-lock.json
+
+# Logs
+logs/
+backend/logs/*.log
+*.log
+
+# SQLite temporary runtime locks
+*.sqlite-journal
+*.sqlite-wal
+*.sqlite-shm
+
+# Environment local overrides
+.env.local
+.env.*.local
+
+# OS files
+.DS_Store
+Thumbs.db
