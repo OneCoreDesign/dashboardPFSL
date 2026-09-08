@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "build": "echo \"Build ready\""
+    "build": "echo \"Build ready\"",
+    "db:import": "node backend/src/db/import-backup.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

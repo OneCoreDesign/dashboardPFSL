@@ -12,6 +12,7 @@ backend/logs/*.log
 *.sqlite-journal
 *.sqlite-wal
 *.sqlite-shm
+backend/data/crm_dev.sqlite
 
 # Environment local overrides
 .env.local
@@ -20,3 +21,7 @@ backend/logs/*.log
 # OS files
 .DS_Store
 Thumbs.db
+
+# Build & archive artifacts
+deploy.zip
+*.zip

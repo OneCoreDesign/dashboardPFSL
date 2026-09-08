@@ -34,8 +34,17 @@ try {
   const db = require('./backend/src/db/database');
   const userCount = db.prepare('SELECT count(*) as c FROM users').get();
   if (!userCount || userCount.c === 0) {
-    console.log('[Auto-Seed] Initializing database with default users...');
-    require('./backend/src/db/seed');
+    const { findBackupFile, importBackup } = require('./backend/src/db/import-backup');
+    const backupFile = findBackupFile();
+    if (backupFile) {
+      console.log('[Auto-Seed] Initializing database from backup file: ' + backupFile);
+      const rawFile = process.env.DB_FILE || './backend/data/crm_prod.sqlite';
+      const resolvedPath = path.isAbsolute(rawFile) ? rawFile : path.resolve(__dirname, rawFile);
+      importBackup(resolvedPath, backupFile);
+    } else {
+      console.log('[Auto-Seed] Initializing database with default users...');
+      require('./backend/src/db/seed');
+    }
   }
 } catch (err) {
   console.warn('[Auto-Seed] Note:', err.message);
