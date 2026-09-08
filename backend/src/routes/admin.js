@@ -120,7 +120,7 @@ router.get('/stats', (req, res) => {
       directors: db.prepare("SELECT COUNT(*) as c FROM users WHERE role = 'director'").get().c,
       totalActivities: db.prepare('SELECT COUNT(*) as c FROM activities').get().c,
       activitiesToday: db.prepare("SELECT COUNT(*) as c FROM activities WHERE date = date('now')").get().c,
-      departments: db.prepare('SELECT DISTINCT department FROM users WHERE department != ""').all().map(r => r.department)
+      departments: db.prepare("SELECT DISTINCT department FROM users WHERE department IS NOT NULL AND department != ''").all().map(r => r.department)
     };
     res.json(stats);
   } catch (err) {
