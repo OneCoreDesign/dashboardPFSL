@@ -36,8 +36,24 @@ function emptyDatabase(dbPath, mode = 'activities_only') {
 
   if (mode === 'admin_only') {
     console.log('[Cleanup] Keeping only admin user...');
-    db.exec("DELETE FROM users WHERE role != 'admin' OR username != 'admin'");
+    db.exec("DELETE FROM users WHERE username != 'admin'");
     db.exec("DELETE FROM sqlite_sequence WHERE name = 'users'");
+    db.exec("INSERT INTO sqlite_sequence (name, seq) VALUES ('users', 1)");
+
+    console.log('[Cleanup] Resetting lenders to default 20 banks...');
+    db.exec("DELETE FROM lenders");
+    db.exec("DELETE FROM sqlite_sequence WHERE name = 'lenders'");
+    const defaultLenders = [
+      'HDFC Bank', 'ICICI Bank', 'State Bank of India (SBI)', 'Axis Bank',
+      'Kotak Mahindra Bank', 'Punjab National Bank', 'Bank of Baroda', 'Canara Bank',
+      'Union Bank of India', 'IndusInd Bank', 'Yes Bank', 'IDFC First Bank',
+      'Bajaj Finserv', 'Tata Capital', 'L&T Finance', 'Aditya Birla Finance',
+      'Piramal Finance', 'Muthoot Finance', 'Manappuram Finance', 'Home First Finance'
+    ];
+    const insLender = db.prepare('INSERT OR IGNORE INTO lenders (name) VALUES (?)');
+    for (const l of defaultLenders) {
+      insLender.run(l);
+    }
   } else if (mode === 'complete') {
     console.log('[Cleanup] Deleting all users and lenders...');
     db.exec('DELETE FROM users');
