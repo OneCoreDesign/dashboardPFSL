@@ -3,9 +3,30 @@ const path = require('path');
 const { DatabaseSync } = require('node:sqlite');
 
 function findBackupFile() {
+  const searchDirs = [
+    path.resolve(__dirname, '../../../'),
+    path.resolve(__dirname, '../../'),
+    path.resolve(__dirname, '../../data')
+  ];
+
+  for (const dir of searchDirs) {
+    if (!fs.existsSync(dir)) continue;
+    try {
+      const files = fs.readdirSync(dir)
+        .filter(f => /^(crm-backup|CRM-BA_1)/i.test(f) && /\.(json|jso)$/i.test(f))
+        .map(f => ({ name: f, path: path.join(dir, f), mtime: fs.statSync(path.join(dir, f)).mtimeMs }))
+        .sort((a, b) => b.mtime - a.mtime);
+      if (files.length > 0) {
+        return files[0].path;
+      }
+    } catch (e) {}
+  }
+
   const candidates = [
+    path.resolve(__dirname, '../../../crm-backup-2026-09-19(2).json'),
     path.resolve(__dirname, '../../../CRM-BA_1.JSO'),
     path.resolve(__dirname, '../../../CRM-BA_1.json'),
+    path.resolve(__dirname, '../../crm-backup-2026-09-19(2).json'),
     path.resolve(__dirname, '../../CRM-BA_1.JSO'),
     path.resolve(__dirname, '../../CRM-BA_1.json'),
     path.resolve(__dirname, '../../data/backup.json')
